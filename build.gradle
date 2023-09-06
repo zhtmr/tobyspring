@@ -18,8 +18,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.apache.httpcomponents:httpclient'
+    implementation 'org.apache.httpcomponents:httpcore'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}

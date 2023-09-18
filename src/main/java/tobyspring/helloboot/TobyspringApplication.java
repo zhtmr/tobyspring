@@ -24,25 +24,27 @@ public class TobyspringApplication {
 
     public static void main(String[] args)
     {
-        // 스프링 컨테이너를 만드는 작업
-        GenericWebApplicationContext applicationContext = new GenericWebApplicationContext();
+        // 스프링 컨테이너를 초기화하면서 서블릿 컨테이너도 초기화하게 수정
+        GenericWebApplicationContext applicationContext = new GenericWebApplicationContext() {
+            @Override
+            protected void onRefresh() {
+                super.onRefresh(); // 템플릿메서드 패턴 훅
+
+                // 서블릿 컨테이너를 만들고 실행
+                ServletWebServerFactory factory = new TomcatServletWebServerFactory();
+                WebServer webServer = factory.getWebServer(servletContext -> {
+                    servletContext.addServlet("dispatcherServlet",
+                            new DispatcherServlet(this)
+                    ).addMapping("/*");
+                });
+                webServer.start();
+            }
+        };
+
         applicationContext.registerBean(HelloController.class);
         applicationContext.registerBean(SimpleHelloService.class);
         applicationContext.refresh();
 
-        // 서블릿 컨테이너를 만들고 실행
-        ServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        WebServer webServer = factory.getWebServer(servletContext -> {
-            servletContext.addServlet("dispatcherServlet",
-                        /*
-                        * 기존에 여기서 bean 작업을 했던 로직 대신 dispatcherServlet 에서 요청 처리를 하게 수정한다.
-                        * dispatcherServlet 은 전달된 applicationContext 에서 웹 요청을 처리할 수 있는 클래스를 찾는다. (@RequestMapping, @GetMapping.. 등이 붙은 클래스)
-                        * */
-                        new DispatcherServlet(applicationContext)
-
-                    ).addMapping("/*");
-        });
-        webServer.start();
     }
 
 }

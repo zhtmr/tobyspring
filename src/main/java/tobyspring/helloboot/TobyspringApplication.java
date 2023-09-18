@@ -27,8 +27,8 @@ public class TobyspringApplication {
         // 스프링 컨테이너를 초기화하면서 서블릿 컨테이너도 초기화하게 수정
         GenericWebApplicationContext applicationContext = new GenericWebApplicationContext() {
             @Override
-            protected void onRefresh() {
-                super.onRefresh(); // 템플릿메서드 패턴 훅
+            protected void onRefresh() { // 오버라이드를 통해 템플릿메서드 패턴 훅 재정의
+                super.onRefresh();
 
                 // 서블릿 컨테이너를 만들고 실행
                 ServletWebServerFactory factory = new TomcatServletWebServerFactory();

@@ -3,7 +3,7 @@ package tobyspring.helloboot;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-@Component
+@MyComponent
 public class SimpleHelloService implements HelloService {
     @Override
     public String sayHello(String name) {
